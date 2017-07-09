@@ -1,7 +1,7 @@
 
-#include <net/if.h>
-#include <ssn_vty.h>
+#include <vty.h>
 
+#include <net/if.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -22,17 +22,7 @@
 #include <slankdev/util.h>
 #include <slankdev/asciicode.h>
 
-
 static inline void ssn_sleep(size_t n) { usleep(1000 * n); }
-
-bool node_fixedstring::match_prefix(const std::string& s)
-{
-  auto ret = str.find(s);
-  if (ret != std::string::npos) {
-    if (ret == 0) return true;
-  }
-  return false;
-}
 
 void shell::process()
 {
@@ -210,29 +200,6 @@ struct list : public command {
 
 } /* namespace ssn_cmd */
 
-#if 0
-namespace ssn_cmd {
-
-
-struct show_cpu : public command {
-  show_cpu()
-  {
-    nodes.push_back(new node_fixedstring("show", ""));
-    nodes.push_back(new node_fixedstring("cpu", ""));
-  }
-  void func(shell* sh)
-  {
-    sh->Printf("show cpu\r\n");
-    int fd = sh->get_fd();
-    FILE* fp = fdopen(sh->get_fd(), "w");
-    ssn_cpu_debug_dump(fp);
-    fflush(fp);
-  }
-};
-
-
-} /* namespace ssn_cmd */
-#endif
 
 bool command::match(const std::string& str)
 {
