@@ -15,7 +15,7 @@ int main(int argc, char** argv)
   printf("Listen %u:%u\n", addr, port);
   std::thread t(vty_poll, &vty);
   getchar();
-  vty_running = false;
+  vty_poll_stop();
   t.join();
 }
 
