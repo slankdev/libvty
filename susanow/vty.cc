@@ -23,39 +23,6 @@
 #include <slankdev/asciicode.h>
 
 
-void shell::process()
-{
-  char str[100];
-  ssize_t res = ::read(fd, str, sizeof(str));
-  if (res <= 0) throw slankdev::exception("OKASHII");
-
-  press_keys(str, res);
-  refresh_prompt();
-}
-
-void shell::refresh_prompt()
-{
-  char lineclear[] = {slankdev::AC_ESC, '[', 2, slankdev::AC_K, '\0'};
-  Printf("\r%s", lineclear);
-  Printf("\r%s%s", prompt.c_str(), ibuf.c_str());
-
-  size_t backlen = ibuf.length() - ibuf.index();
-  char left [] = {slankdev::AC_ESC, '[', slankdev::AC_D, '\0'};
-  for (size_t i=0; i<backlen; i++) {
-    Printf("%s", left);
-  }
-}
-
-
-inline bool is_prefix(std::string str, std::string pref)
-{
-  auto ret = str.find(pref);
-  if (ret != std::string::npos) {
-    if (ret == 0) return true;
-  }
-  return false;
-}
-
 vty::vty(uint16_t p, const char* msg, const char* prmpt)
   : port(p), bootmsg(msg), prompt(prmpt), server_fd(get_server_sock())
 {
@@ -68,73 +35,6 @@ vty::~vty()
 }
 void vty::install_keyfunction(key_func* kf) { keyfuncs.push_back(kf); }
 void vty::install_command(command* cmd) { commands.push_back(cmd); }
-
-
-void shell::press_keys(const void* d, size_t l)
-{
-  const uint8_t* p = reinterpret_cast<const uint8_t*>(d);
-  if (l == 0) throw slankdev::exception("empty data received");
-
-  for (key_func* kf : *keyfuncs) {
-    if (kf->match(p, l)) {
-      kf->function(this);
-      return ;
-    }
-  }
-
-  if (l > 1) {
-    return ;
-  }
-  ibuf.input_char(p[0]);
-}
-
-
-shell::shell(
-    int d,
-    const char* bootmsg,
-    const char* prmpt,
-    const std::vector<command*>* cmds,
-    const std::vector<key_func*>* kfs,
-    void* ptr
-    ) :
-  prompt(prmpt),
-  fd(d),
-  closed(false),
-  commands(cmds),
-  keyfuncs(kfs),
-  user_ptr(ptr)
-{
-  Printf(bootmsg);
-  refresh_prompt();
-}
-
-
-void shell::exec_command()
-{
-  Printf("\r\n");
-  if (!ibuf.empty()) {
-    history.add(ibuf.to_string());
-    for (size_t i=0; i<commands->size(); i++) {
-      if (commands->at(i)->match(ibuf.c_str())) {
-        commands->at(i)->func(this);
-        ibuf.clear();
-        history.clean();
-        Printf("\r%s%s", prompt.c_str(), ibuf.c_str());
-        refresh_prompt();
-        return ;
-      }
-    }
-    Printf("command not found: \"%s\"\r\n", ibuf.c_str());
-  }
-  history.clean();
-  ibuf.clear();
-  Printf("\r%s%s", prompt.c_str(), ibuf.c_str());
-  refresh_prompt();
-}
-
-
-
-
 int vty::get_server_sock()
 {
   slankdev::socketfd server_sock;
