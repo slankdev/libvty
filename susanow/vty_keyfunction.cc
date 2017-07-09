@@ -15,8 +15,8 @@ static inline bool endisspace(std::string str)
 void KF_help::function(vty_client* sh)
 {
   const std::vector<command*>& commands = *sh->commands;
-  std::vector<std::string> list = slankdev::split(sh->ibuf.c_str(), ' ');
-  if (endisspace(sh->ibuf.c_str()) || list.empty()) list.push_back("");
+  std::vector<std::string> list = slankdev::split(sh->ibuf.to_string().c_str(), ' ');
+  if (endisspace(sh->ibuf.to_string().c_str()) || list.empty()) list.push_back("");
 
   sh->Printf("\r\n");
   std::vector<std::string> match;
@@ -67,8 +67,8 @@ void KF_help::function(vty_client* sh)
 void KF_completion::function(vty_client* sh)
 {
   const std::vector<command*>& commands = *sh->commands;
-  std::vector<std::string> list = slankdev::split(sh->ibuf.c_str(), ' ');
-  if (endisspace(sh->ibuf.c_str()) || list.empty()) list.push_back("");
+  std::vector<std::string> list = slankdev::split(sh->ibuf.to_string().c_str(), ' ');
+  if (endisspace(sh->ibuf.to_string().c_str()) || list.empty()) list.push_back("");
 
   sh->Printf("\r\n");
   std::vector<std::string> match;
