@@ -1,22 +1,32 @@
 
 
+#include <unistd.h>
 #include <stdint.h>
 #include <thread>
 #include <ssn_vty.h>
 
-void Slankdev(void*) {}
+bool running;
+void vty_poll(void* arg)
+{
+  ssn_vty* v = reinterpret_cast<ssn_vty*>(arg);
+  running = true;
+  while (running) {
+    v->poll_dispatch();
+  }
+  printf("Finish %s\n", __func__);
+}
+
 
 int main(int argc, char** argv)
 {
   auto addr = 0x00000000;
   auto port = 9999;
   ssn_vty vty(addr, port);
-  vty.new_install_command("", Slankdev, nullptr);
 
   printf("Listen %u:%u\n", addr, port);
-  std::thread t(ssn_vty_poll_thread, &vty);
+  std::thread t(vty_poll, &vty);
   getchar();
-  ssn_vty_poll_thread_stop();
+  running = false;
   t.join();
 }
 

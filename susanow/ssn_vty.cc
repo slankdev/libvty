@@ -86,8 +86,6 @@ struct slank : public command {
  *======================================
  */
 
-bool ssn_vty_poll_thread_running;
-
 ssn_vty::ssn_vty(uint32_t addr, uint16_t port)
 {
   char str[] = "\r\n"
@@ -104,16 +102,6 @@ ssn_vty::ssn_vty(uint32_t addr, uint16_t port)
       " \"Y8888P\"   \"Y88888  88888P\' \"Y888888 888  888  \"Y88P\"   \"Y8888888P\"  \r\n"
       "\r\n";
   v = new vty_server(addr, port, str, "ssn> ");
-}
-ssn_vty::~ssn_vty() { delete v; }
-void ssn_vty::poll_dispatch() { v->poll_dispatch(); }
-void ssn_vty::install_command(command* cmd) { v->install_command(cmd); }
-
-static inline void ssn_sleep(size_t n) { usleep(1000 * n); }
-
-void ssn_vty_poll_thread(void* arg)
-{
-  ssn_vty* v = reinterpret_cast<ssn_vty*>(arg);
   v->install_command(new slank);
   v->install_command(new quit        );
   v->install_command(new clear       );
@@ -121,14 +109,11 @@ void ssn_vty_poll_thread(void* arg)
   v->install_command(new list        );
   v->install_command(new show_author );
   v->install_command(new show_version);
-
-  ssn_vty_poll_thread_running = true;
-  while (ssn_vty_poll_thread_running) {
-    v->poll_dispatch();
-    ssn_sleep(1);
-  }
 }
+ssn_vty::~ssn_vty() { delete v; }
+void ssn_vty::poll_dispatch() { v->poll_dispatch(); }
+void ssn_vty::install_command(command* cmd) { v->install_command(cmd); }
+void ssn_sleep(size_t n) { usleep(n * 1000); }
 
-void ssn_vty_poll_thread_stop() { ssn_vty_poll_thread_running = false; }
 
 
