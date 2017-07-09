@@ -9,12 +9,12 @@
 struct echo : public vty_cmd {
   echo()
   {
-    match_.nodes.push_back(new node_fixedstring("echo", ""));
-    match_.nodes.push_back(new node_string              );
+    match.nodes.push_back(new node_fixedstring("echo", ""));
+    match.nodes.push_back(new node_string              );
   }
   void func(vty_client* sh)
   {
-    std::string s = match_.nodes[1]->get();
+    std::string s = match.nodes[1]->get();
     sh->Printf("%s\n", s.c_str());
   }
 };
@@ -22,8 +22,8 @@ struct echo : public vty_cmd {
 struct show_author : public vty_cmd {
   show_author()
   {
-    match_.nodes.push_back(new node_fixedstring("show", ""));
-    match_.nodes.push_back(new node_fixedstring("author", ""));
+    match.nodes.push_back(new node_fixedstring("show", ""));
+    match.nodes.push_back(new node_fixedstring("author", ""));
   }
   void func(vty_client* sh)
   {
@@ -38,8 +38,8 @@ struct show_author : public vty_cmd {
 struct show_version : public vty_cmd {
   show_version()
   {
-    match_.nodes.push_back(new node_fixedstring("show", ""));
-    match_.nodes.push_back(new node_fixedstring("version", ""));
+    match.nodes.push_back(new node_fixedstring("show", ""));
+    match.nodes.push_back(new node_fixedstring("version", ""));
   }
   void func(vty_client* sh)
   {
@@ -49,23 +49,23 @@ struct show_version : public vty_cmd {
 };
 
 struct quit : public vty_cmd {
-  quit() { match_.nodes.push_back(new node_fixedstring("quit", "")); }
+  quit() { match.nodes.push_back(new node_fixedstring("quit", "")); }
   void func(vty_client* sh) { sh->close(); }
 };
 
 struct clear : public vty_cmd {
-  clear() { match_.nodes.push_back(new node_fixedstring("clear", "")); }
+  clear() { match.nodes.push_back(new node_fixedstring("clear", "")); }
   void func(vty_client* sh) { sh->Printf("\033[2J\r\n"); }
 };
 
 struct list : public vty_cmd {
-  list() { match_.nodes.push_back(new node_fixedstring("list", "")); }
+  list() { match.nodes.push_back(new node_fixedstring("list", "")); }
   void func(vty_client* sh)
   {
     const std::vector<vty_cmd*>& commands = *sh->commands;
     for (vty_cmd* cmd : commands) {
       std::string s = "";
-      for (node* nd : cmd->match_.nodes) {
+      for (node* nd : cmd->match.nodes) {
         s += nd->to_string();
         s += " ";
       }
@@ -75,7 +75,7 @@ struct list : public vty_cmd {
 };
 
 struct slank : public vty_cmd {
-  slank() { match_.nodes.push_back(new node_fixedstring("slank", "")); }
+  slank() { match.nodes.push_back(new node_fixedstring("slank", "")); }
   void func(vty_client* sh)
   {
     sh->Printf("slankdev\r\n");
