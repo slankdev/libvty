@@ -5,6 +5,7 @@
 #include <vty_cmd_node.h>
 
 class vty_client;
+
 class command {
  public:
   std::vector<node*> nodes;
