@@ -1,9 +1,13 @@
 
+
 LIBSLANKDEV := /home/slank/git/slankdev/libslankdev
-CXXFLAGS += -I$(LIBSLANKDEV) -std=c++11
+CXXFLAGS += -I$(LIBSLANKDEV) -std=c++11 -I.
 LDFLAGS  = -lpthread
 
-CXXFLAGS += -I.
+.cc.o:
+	@echo "CXX $@"
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
 SRC = \
 		main.cc            \
 		ssn_vty.cc         \
@@ -12,7 +16,12 @@ SRC = \
 		vty_cmd.cc         \
 		vty_keyfunction.cc \
 		vty_client.cc
+OBJ = $(SRC:.cc=.o)
 
-all:
-	$(CXX) $(CXXFLAGS) $(SRC) $(LDFLAGS)
+all: $(OBJ)
+	$(CXX) $(CXXFLAGS) $(OBJ) -o a.out $(LDFLAGS)
+
+clean:
+	rm -rf *.o *.out
+
 
