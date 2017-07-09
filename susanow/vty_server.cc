@@ -91,18 +91,17 @@ void vty_server::install_command(command* cmd) { commands_.push_back(cmd); }
 void vty_server::poll_dispatch()
 {
   struct Pollfd : public pollfd {
-    Pollfd(int ifd, short ievents)
-    {
-      fd = ifd;
-      events = ievents;
-    }
+    Pollfd(int f, short e) { fd = f; events = e; }
   };
+
   std::vector<struct Pollfd> fds;
   fds.push_back(Pollfd(server_fd_, POLLIN));
-  for (const vty_client& sh : clients_) fds.emplace_back(Pollfd(sh.fd, POLLIN));
+
+  for (const vty_client& sh : clients_) fds.push_back(Pollfd(sh.fd, POLLIN));
 
   if (slankdev::poll(fds.data(), fds.size(), 1000)) {
     if (fds[0].revents & POLLIN) {
+
       /*
        * Server Accept Process
        */
@@ -129,8 +128,8 @@ void vty_server::poll_dispatch()
             &commands_,
             &keyfuncs_,
             user_ptr_
-            )
-          );
+          )
+      );
     }
 
     /*
