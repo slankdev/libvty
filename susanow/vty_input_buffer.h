@@ -5,11 +5,12 @@
 #include <stddef.h>
 #include <string>
 
-class inputbuffer {
+class vty_input_buffer {
   std::string ibuf;
   size_t cur_idx;
  public:
-  inputbuffer() : cur_idx(0) {}
+  vty_input_buffer() : cur_idx(0) {}
+
   void input_char(char c) { ibuf.insert(ibuf.begin()+cur_idx, c); cur_idx++; }
   void input_str(const std::string& str) { for (char c : str) input_char(c); }
   void clear()  { ibuf.clear(); cur_idx = 0; }

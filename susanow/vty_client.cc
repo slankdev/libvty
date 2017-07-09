@@ -77,6 +77,7 @@ ret:
   refresh_prompt();
 }
 
+void vty_client::close() { closed_ = true; }
 void vty_client::refresh_prompt()
 {
   char lineclear[] = {slankdev::AC_ESC, '[', 2, slankdev::AC_K, '\0'};
