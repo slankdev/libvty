@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <slankdev/asciicode.h>
 
-void shell::press_keys(const void* d, size_t l)
+void vty_client::press_keys(const void* d, size_t l)
 {
   const uint8_t* p = reinterpret_cast<const uint8_t*>(d);
   if (l == 0) throw slankdev::exception("empty data received");
@@ -27,7 +27,7 @@ void shell::press_keys(const void* d, size_t l)
 }
 
 
-shell::shell(
+vty_client::vty_client(
     int d,
     const char* bootmsg,
     const char* prmpt,
@@ -47,7 +47,7 @@ shell::shell(
 }
 
 
-void shell::exec_command()
+void vty_client::exec_command()
 {
   Printf("\r\n");
   if (!ibuf.empty()) {
@@ -70,7 +70,7 @@ void shell::exec_command()
   refresh_prompt();
 }
 
-void shell::process()
+void vty_client::process()
 {
   char str[100];
   ssize_t res = ::read(fd, str, sizeof(str));
@@ -80,7 +80,7 @@ void shell::process()
   refresh_prompt();
 }
 
-void shell::refresh_prompt()
+void vty_client::refresh_prompt()
 {
   char lineclear[] = {slankdev::AC_ESC, '[', 2, slankdev::AC_K, '\0'};
   Printf("\r%s", lineclear);

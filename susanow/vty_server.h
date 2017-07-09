@@ -20,7 +20,7 @@ class vty_server {
   const std::string       bootmsg;
   const std::string       prompt;
   int                     server_fd;
-  std::vector<shell>      shells;
+  std::vector<vty_client> clients;
   std::vector<command*>   commands;
   std::vector<key_func*>  keyfuncs;
 

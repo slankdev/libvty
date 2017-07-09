@@ -12,7 +12,7 @@ struct echo : public command {
     nodes.push_back(new node_fixedstring("echo", ""));
     nodes.push_back(new node_string              );
   }
-  void func(shell* sh)
+  void func(vty_client* sh)
   {
     std::string s = nodes[1]->get();
     sh->Printf("%s\n", s.c_str());
@@ -25,7 +25,7 @@ struct show_author : public command {
     nodes.push_back(new node_fixedstring("show", ""));
     nodes.push_back(new node_fixedstring("author", ""));
   }
-  void func(shell* sh)
+  void func(vty_client* sh)
   {
     sh->Printf("Hiroki SHIROKURA.\r\n");
     sh->Printf(" Twitter : @\r\n");
@@ -41,7 +41,7 @@ struct show_version : public command {
     nodes.push_back(new node_fixedstring("show", ""));
     nodes.push_back(new node_fixedstring("version", ""));
   }
-  void func(shell* sh)
+  void func(vty_client* sh)
   {
     sh->Printf("Susanow 0.0.0\r\n");
     sh->Printf("Copyright 2017-2020 Hiroki SHIROKURA.\r\n");
@@ -50,17 +50,17 @@ struct show_version : public command {
 
 struct quit : public command {
   quit() { nodes.push_back(new node_fixedstring("quit", "")); }
-  void func(shell* sh) { sh->close(); }
+  void func(vty_client* sh) { sh->close(); }
 };
 
 struct clear : public command {
   clear() { nodes.push_back(new node_fixedstring("clear", "")); }
-  void func(shell* sh) { sh->Printf("\033[2J\r\n"); }
+  void func(vty_client* sh) { sh->Printf("\033[2J\r\n"); }
 };
 
 struct list : public command {
   list() { nodes.push_back(new node_fixedstring("list", "")); }
-  void func(shell* sh)
+  void func(vty_client* sh)
   {
     const std::vector<command*>& commands = *sh->commands;
     for (command* cmd : commands) {
@@ -76,7 +76,7 @@ struct list : public command {
 
 struct slank : public command {
   slank() { nodes.push_back(new node_fixedstring("slank", "")); }
-  void func(shell* sh)
+  void func(vty_client* sh)
   {
     sh->Printf("slankdev\r\n");
   }

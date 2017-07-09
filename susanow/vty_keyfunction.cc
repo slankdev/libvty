@@ -11,7 +11,7 @@ static inline bool endisspace(std::string str)
   return (istr[strlen(istr)-1] == ' ');
 }
 
-void KF_help::function(shell* sh)
+void KF_help::function(vty_client* sh)
 {
   const std::vector<command*>& commands = *sh->commands;
   std::vector<std::string> list = slankdev::split(sh->ibuf.c_str(), ' ');
@@ -63,7 +63,7 @@ void KF_help::function(shell* sh)
 }
 
 
-void KF_completion::function(shell* sh)
+void KF_completion::function(vty_client* sh)
 {
   const std::vector<command*>& commands = *sh->commands;
   std::vector<std::string> list = slankdev::split(sh->ibuf.c_str(), ' ');

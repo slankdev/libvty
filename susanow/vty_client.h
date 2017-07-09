@@ -12,7 +12,7 @@
 class key_func;
 class command;
 
-class shell {
+class vty_client {
   friend class vty_server;
   std::string prompt;
   int   fd;
@@ -40,7 +40,7 @@ class shell {
 
   int get_fd() const { return fd; }
 
-  shell(int d, const char* bootmsg, const char* prmpt,
+  vty_client(int d, const char* bootmsg, const char* prmpt,
       const std::vector<command*>* cmds,
       const std::vector<key_func*>* kfs, void* ptr);
   void process();

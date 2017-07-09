@@ -62,7 +62,7 @@ void vty_server::dispatch()
   };
   std::vector<struct Pollfd> fds;
   fds.push_back(Pollfd(server_fd, POLLIN));
-  for (const shell& sh : shells) fds.emplace_back(Pollfd(sh.fd, POLLIN));
+  for (const vty_client& sh : clients) fds.emplace_back(Pollfd(sh.fd, POLLIN));
 
   if (slankdev::poll(fds.data(), fds.size(), 1000)) {
     if (fds[0].revents & POLLIN) {
@@ -84,8 +84,8 @@ void vty_server::dispatch()
       slankdev::vty_dont_linemode (fd);
       slankdev::vty_do_window_size (fd);
 
-      shells.push_back(
-          shell(
+      clients.push_back(
+          vty_client(
             fd,
             bootmsg.c_str(),
             prompt.c_str(),
@@ -101,10 +101,10 @@ void vty_server::dispatch()
      */
     for (size_t i=1; i<fds.size(); i++) {
       if (fds[i].revents & POLLIN) {
-        shells[i-1].process();
-        if (shells[i-1].closed) {
+        clients[i-1].process();
+        if (clients[i-1].closed) {
           close(fds[i].fd);
-          shells.erase(shells.begin() + i);
+          clients.erase(clients.begin() + i);
           continue;
         }
       }
