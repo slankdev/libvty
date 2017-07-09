@@ -1,11 +1,12 @@
 
 
-LIBSLANKDEV := /home/slank/git/slankdev/libslankdev
-CXXFLAGS += -I$(LIBSLANKDEV) -std=c++11 -I../susanow
-LDFLAGS  = -lpthread -lvty -L../susanow
+LIBVTY := ../
+LIBSLANKDEV := $(HOME)/git/slankdev/libslankdev
+CXXFLAGS += -I$(LIBSLANKDEV) -I$(LIBVTY) -I. -std=c++11
+LDFLAGS  = -L$(LIBVTY) -lpthread -lvty
 
 all:
-	$(CXX) $(CXXFLAGS) main.cc -o a.out $(LDFLAGS) -lvty
+	$(CXX) $(CXXFLAGS) main.cc ssn_vty.cc $(LDFLAGS)
 
 clean:
 	rm -rf *.o *.out

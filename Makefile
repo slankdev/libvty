@@ -8,7 +8,6 @@ CXXFLAGS = -I$(LIBSLANKDEV) -std=c++11 -I.
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 SRC = \
-		ssn_vty.cc         \
 		vty_server.cc      \
 		vty_cmd.cc         \
 		vty_keyfunction.cc \
