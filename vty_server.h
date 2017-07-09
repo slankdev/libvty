@@ -11,8 +11,6 @@
 #include "vty_client.h"
 
 
-typedef void (*vty_cmdcallback_t)(vty_cmd_match *m, void* arg);
-
 
 class vty_server {
   int                     server_fd_;
@@ -29,7 +27,7 @@ class vty_server {
   virtual ~vty_server();
 
   void install_keyfunction(key_func* kf);
-#if 1
+#if 0
   void install_command(vty_cmd* cmd);
 #else
   void install_command(vty_cmd_match m, vty_cmdcallback_t f, void* arg);

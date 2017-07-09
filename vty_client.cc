@@ -37,7 +37,7 @@ void vty_client::exec_command()
     history.add(ibuf.to_string());
     for (size_t i=0; i<commands->size(); i++) {
       if (commands->at(i)->match.is_match(ibuf.to_string().c_str())) {
-        commands->at(i)->func(this);
+        commands->at(i)->f(&commands->at(i)->match, this, commands->at(i)->arg);
         ibuf.clear();
         history.clean();
         Printf("\r%s%s", prompt_.c_str(), ibuf.to_string().c_str());
