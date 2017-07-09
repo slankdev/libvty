@@ -1,6 +1,12 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+#include <stdint.h>
+#include <stddef.h>
+#include <slankdev/exception.h>
+
 class node {
  public:
   virtual bool match(const std::string& str) = 0;

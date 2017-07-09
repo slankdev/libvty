@@ -1,7 +1,7 @@
 
 
 #include <thread>
-#include "vty.h"
+#include "ssn_vty.h"
 
 int main(int argc, char** argv)
 {

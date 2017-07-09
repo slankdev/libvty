@@ -2,6 +2,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <vty_cmd_node.h>
 
 class shell;
 class command {
