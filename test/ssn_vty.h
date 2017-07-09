@@ -15,7 +15,7 @@ class ssn_vty {
   virtual ~ssn_vty();
 
   void poll_dispatch();
-  void install_command(command* cmd);
+  void install_command(vty_cmd* cmd);
 };
 
 extern bool vty_running;

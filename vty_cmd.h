@@ -6,10 +6,10 @@
 
 class vty_client;
 
-class command {
+class vty_cmd {
  public:
   std::vector<node*> nodes;
-  virtual ~command() {}
+  virtual ~vty_cmd() {}
   virtual void func(vty_client* sh) = 0;
   virtual bool match(const std::string& str);
 };

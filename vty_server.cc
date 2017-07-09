@@ -98,11 +98,11 @@ vty_server::vty_server(uint32_t addr, uint16_t port,
 }
 vty_server::~vty_server()
 {
-  for (command* c : commands_) delete c;
+  for (vty_cmd* c : commands_) delete c;
   for (key_func* f : keyfuncs_) delete f;
 }
 void vty_server::install_keyfunction(key_func* kf) { keyfuncs_.push_back(kf); }
-void vty_server::install_command(command* cmd) { commands_.push_back(cmd); }
+void vty_server::install_command(vty_cmd* cmd) { commands_.push_back(cmd); }
 
 void vty_server::poll_dispatch()
 {

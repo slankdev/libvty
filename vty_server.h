@@ -16,7 +16,7 @@ class vty_server {
   const std::string       bootmsg_;
   const std::string       prompt_;
   std::vector<vty_client> clients_;
-  std::vector<command*>   commands_;
+  std::vector<vty_cmd*>   commands_;
   std::vector<key_func*>  keyfuncs_;
  public:
   void* user_ptr_;
@@ -26,7 +26,7 @@ class vty_server {
   virtual ~vty_server();
 
   void install_keyfunction(key_func* kf);
-  void install_command(command* cmd);
+  void install_command(vty_cmd* cmd);
   void poll_dispatch();
 };
 

@@ -4,7 +4,7 @@
 #include <string>
 #include "vty_cmd.h"
 
-bool command::match(const std::string& str)
+bool vty_cmd::match(const std::string& str)
 {
   std::vector<std::string> list = slankdev::split(str, ' ');
   if (list.size() != nodes.size()) {

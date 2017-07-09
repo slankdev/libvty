@@ -14,7 +14,7 @@
 
 
 class key_func;
-class command;
+class vty_cmd;
 
 class vty_client {
   friend class vty_server;
@@ -25,13 +25,13 @@ class vty_client {
  public:
   commandhistory history;
   vty_input_buffer  ibuf;
-  const std::vector<command*> * commands;
+  const std::vector<vty_cmd*> * commands;
   const std::vector<key_func*>* keyfuncs;
   void* user_ptr;
 
   vty_client(int d,
       const char* bootmsg, const char* prmpt,
-      const std::vector<command*>* cmds,
+      const std::vector<vty_cmd*>* cmds,
       const std::vector<key_func*>* kfs,
       void* ptr);
   void poll_dispatch();

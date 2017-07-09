@@ -14,7 +14,7 @@ vty_client::vty_client(
     int d,
     const char* bootmsg,
     const char* prmpt,
-    const std::vector<command*>* cmds,
+    const std::vector<vty_cmd*>* cmds,
     const std::vector<key_func*>* kfs,
     void* ptr
     ) :
