@@ -12,7 +12,6 @@ SRC = \
 		main.cc            \
 		ssn_vty.cc         \
 		vty_server.cc      \
-		vty_cmd_history.cc \
 		vty_cmd.cc         \
 		vty_keyfunction.cc \
 		vty_client.cc
