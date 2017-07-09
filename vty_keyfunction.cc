@@ -24,7 +24,7 @@ void KF_help::function(vty_client* sh)
 
     for (size_t i=0; i<list.size(); i++) {
 
-      if (i == cmd->nodes.size()) {
+      if (i == cmd->match_.nodes.size()) {
 
         if (list[i] == "") {
           sh->Printf("  <CR>\r\n");
@@ -35,13 +35,13 @@ void KF_help::function(vty_client* sh)
 
       } else {
 
-        if (!cmd->nodes[i]->match_prefix(list[i])) {
+        if (!cmd->match_.nodes[i]->match_prefix(list[i])) {
           break;
         } else {
           if (i+1==list.size()) {
             std::string s = slankdev::fs("%-10s:   %-20s",
-                cmd->nodes[i]->to_string().c_str(),
-                cmd->nodes[i]->msg().c_str()
+                cmd->match_.nodes[i]->to_string().c_str(),
+                cmd->match_.nodes[i]->msg().c_str()
                 );
             match.push_back(s);
           } else {
@@ -76,7 +76,7 @@ void KF_completion::function(vty_client* sh)
 
     for (size_t i=0; i<list.size(); i++) {
 
-      if (i == cmd->nodes.size()) {
+      if (i == cmd->match_.nodes.size()) {
 
         if (list[i] == "") {
           sh->Printf("  <CR>\r\n");
@@ -87,11 +87,11 @@ void KF_completion::function(vty_client* sh)
 
       } else {
 
-        if (!cmd->nodes[i]->match_prefix(list[i])) {
+        if (!cmd->match_.nodes[i]->match_prefix(list[i])) {
           break;
         } else {
           if (i+1==list.size()) {
-            std::string s = cmd->nodes[i]->to_string();
+            std::string s = cmd->match_.nodes[i]->to_string();
             match.push_back(s);
           } else {
             ;

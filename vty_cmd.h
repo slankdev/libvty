@@ -1,14 +1,13 @@
 
 #pragma once
 #include <string>
-#include <vector>
-#include <vty_cmd_node.h>
+#include <vty_cmd_match.h>
 
 class vty_client;
 
 class vty_cmd {
  public:
-  std::vector<node*> nodes;
+  vty_cmd_match match_;
   virtual ~vty_cmd() {}
   virtual void func(vty_client* sh) = 0;
   virtual bool match(const std::string& str);
