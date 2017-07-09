@@ -106,23 +106,25 @@ ssn_vty::ssn_vty(uint32_t addr, uint16_t port)
   v = new vty_server(addr, port, str, "ssn> ");
 }
 ssn_vty::~ssn_vty() { delete v; }
+void ssn_vty::poll_dispatch() { v->poll_dispatch(); }
+void ssn_vty::install_command(command* cmd) { v->install_command(cmd); }
 
 static inline void ssn_sleep(size_t n) { usleep(1000 * n); }
 
 void ssn_vty_poll_thread(void* arg)
 {
-  ssn_vty* Vty = reinterpret_cast<ssn_vty*>(arg);
-  Vty->v->install_command(new slank);
-  Vty->v->install_command(new quit        );
-  Vty->v->install_command(new clear       );
-  Vty->v->install_command(new echo        );
-  Vty->v->install_command(new list        );
-  Vty->v->install_command(new show_author );
-  Vty->v->install_command(new show_version);
+  ssn_vty* v = reinterpret_cast<ssn_vty*>(arg);
+  v->install_command(new slank);
+  v->install_command(new quit        );
+  v->install_command(new clear       );
+  v->install_command(new echo        );
+  v->install_command(new list        );
+  v->install_command(new show_author );
+  v->install_command(new show_version);
 
   ssn_vty_poll_thread_running = true;
   while (ssn_vty_poll_thread_running) {
-    Vty->v->dispatch();
+    v->poll_dispatch();
     ssn_sleep(1);
   }
 }

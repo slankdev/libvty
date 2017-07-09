@@ -88,7 +88,7 @@ vty_server::~vty_server()
 void vty_server::install_keyfunction(key_func* kf) { keyfuncs_.push_back(kf); }
 void vty_server::install_command(command* cmd) { commands_.push_back(cmd); }
 
-void vty_server::dispatch()
+void vty_server::poll_dispatch()
 {
   struct Pollfd : public pollfd {
     Pollfd(int ifd, short ievents)

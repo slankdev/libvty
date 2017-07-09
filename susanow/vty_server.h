@@ -31,7 +31,7 @@ class vty_server {
 
   void install_keyfunction(key_func* kf);
   void install_command(command* cmd);
-  void dispatch();
+  void poll_dispatch();
 };
 
 
