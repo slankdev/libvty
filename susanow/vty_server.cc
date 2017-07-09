@@ -97,7 +97,7 @@ void vty_server::poll_dispatch()
   std::vector<struct Pollfd> fds;
   fds.push_back(Pollfd(server_fd_, POLLIN));
 
-  for (const vty_client& sh : clients_) fds.push_back(Pollfd(sh.fd, POLLIN));
+  for (const vty_client& sh : clients_) fds.push_back(Pollfd(sh.client_fd_, POLLIN));
 
   if (slankdev::poll(fds.data(), fds.size(), 1000)) {
     if (fds[0].revents & POLLIN) {
@@ -138,7 +138,7 @@ void vty_server::poll_dispatch()
     for (size_t i=1; i<fds.size(); i++) {
       if (fds[i].revents & POLLIN) {
         clients_[i-1].poll_dispatch();
-        if (clients_[i-1].closed) {
+        if (clients_[i-1].closed_) {
           close(fds[i].fd);
           clients_.erase(clients_.begin() + i);
           continue;

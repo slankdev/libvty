@@ -14,9 +14,10 @@ class command;
 
 class vty_client {
   friend class vty_server;
-  std::string prompt;
-  int   fd;
-  bool  closed;
+
+  std::string prompt_   ;
+  int         client_fd_;
+  bool        closed_   ;
 
   void press_keys(const void* d, size_t l);
  public:
@@ -26,20 +27,10 @@ class vty_client {
   const std::vector<key_func*>* keyfuncs;
   void* user_ptr;
 
-  void close() { closed = true; }
+  void close() { closed_ = true; }
+  void Printf(const char* fmt, ...);
 
-  void Printf(const char* fmt, ...)
-  {
-    FILE* fp = fdopen(fd, "w");
-    va_list args;
-    va_start(args, fmt);
-    vfprintf(fp, fmt, args);
-    va_end(args);
-    fflush(fp);
-  }
-
-  int get_fd() const { return fd; }
-
+  int get_fd() const { return client_fd_; }
   vty_client(int d, const char* bootmsg, const char* prmpt,
       const std::vector<command*>* cmds,
       const std::vector<key_func*>* kfs, void* ptr);
