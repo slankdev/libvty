@@ -4,14 +4,10 @@
 #include <stdint.h>
 #include <string.h>
 #include <string>
-#include <slankdev/util.h>
-#include <slankdev/exception.h>
+#include <vector>
 
 #include "vty_keyfunction.h"
-#include "vty_cmd_node.h"
 #include "vty_cmd.h"
-#include "vty_input_buffer.h"
-#include "vty_cmd_history.h"
 #include "vty_client.h"
 
 

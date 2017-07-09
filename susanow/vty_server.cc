@@ -22,7 +22,7 @@
 #include <slankdev/util.h>
 #include <slankdev/asciicode.h>
 
-static int Get_server_sock(uint32_t addr, uint16_t port)
+static int open_server_sock(uint32_t addr, uint16_t port)
 {
   slankdev::socketfd server_sock;
   server_sock.noclose_in_destruct = true;
@@ -36,11 +36,27 @@ static int Get_server_sock(uint32_t addr, uint16_t port)
   return server_sock.get_fd();
 }
 
+static void preconfig_telnet_fd(int fd)
+{
+  slankdev::socketfd client_sock(fd);
+  uint32_t on = 1;
+  client_sock.setsockopt(IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));
+  int flags = client_sock.fcntl(F_GETFL);
+  client_sock.fcntl(F_SETFL, (flags | O_NONBLOCK));
+  client_sock.noclose_in_destruct = true;
+  slankdev::vty_will_echo (fd);
+  slankdev::vty_will_suppress_go_ahead (fd);
+  slankdev::vty_dont_linemode (fd);
+  slankdev::vty_do_window_size (fd);
+}
+
+
+
 vty_server::vty_server(uint32_t addr, uint16_t port,
                 const char* bootmsg, const char* prompt)
   : bootmsg_(bootmsg), prompt_(prompt)
 {
-  server_fd_ = Get_server_sock(addr, port);
+  server_fd_ = open_server_sock(addr, port);
 
   using namespace slankdev;
   uint8_t up   [] = {AC_ESC, '[', AC_A};
@@ -100,26 +116,18 @@ void vty_server::poll_dispatch()
   for (const vty_client& sh : clients_) fds.push_back(Pollfd(sh.client_fd_, POLLIN));
 
   if (slankdev::poll(fds.data(), fds.size(), 1000)) {
-    if (fds[0].revents & POLLIN) {
 
-      /*
-       * Server Accept Process
-       */
+    /*
+     * Server Accept Process
+     */
+    if (fds[0].revents & POLLIN) {
       struct sockaddr_in client;
       socklen_t client_len = sizeof(client);
       int fd = accept(fds[0].fd, (sockaddr*)&client, &client_len);
+      printf("accepted connection host=%s:%d\n",
+          inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
-      slankdev::socketfd client_sock(fd);
-      uint32_t on = 1;
-      client_sock.setsockopt(IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));
-      int flags = client_sock.fcntl(F_GETFL);
-      client_sock.fcntl(F_SETFL, (flags | O_NONBLOCK));
-      client_sock.noclose_in_destruct = true;
-      slankdev::vty_will_echo (fd);
-      slankdev::vty_will_suppress_go_ahead (fd);
-      slankdev::vty_dont_linemode (fd);
-      slankdev::vty_do_window_size (fd);
-
+      preconfig_telnet_fd(fd);
       clients_.push_back(
           vty_client(
             fd,
@@ -144,8 +152,9 @@ void vty_server::poll_dispatch()
           continue;
         }
       }
-    } // for
-  }
+    }
+
+  } // if(poll)
 }
 
 
