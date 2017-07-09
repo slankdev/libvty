@@ -23,19 +23,19 @@
 #include <slankdev/asciicode.h>
 
 
-vty::vty(uint16_t p, const char* msg, const char* prmpt)
+vty_server::vty_server(uint16_t p, const char* msg, const char* prmpt)
   : port(p), bootmsg(msg), prompt(prmpt), server_fd(get_server_sock())
 {
   add_default_keyfunctions();
 }
-vty::~vty()
+vty_server::~vty_server()
 {
   for (command* c : commands) delete c;
   for (key_func* f : keyfuncs) delete f;
 }
-void vty::install_keyfunction(key_func* kf) { keyfuncs.push_back(kf); }
-void vty::install_command(command* cmd) { commands.push_back(cmd); }
-int vty::get_server_sock()
+void vty_server::install_keyfunction(key_func* kf) { keyfuncs.push_back(kf); }
+void vty_server::install_command(command* cmd) { commands.push_back(cmd); }
+int vty_server::get_server_sock()
 {
   slankdev::socketfd server_sock;
   server_sock.noclose_in_destruct = true;
@@ -51,7 +51,7 @@ int vty::get_server_sock()
   return server_sock.get_fd();
 }
 
-void vty::dispatch()
+void vty_server::dispatch()
 {
   struct Pollfd : public pollfd {
     Pollfd(int ifd, short ievents)
@@ -112,7 +112,7 @@ void vty::dispatch()
   }
 }
 
-void vty::add_default_keyfunctions()
+void vty_server::add_default_keyfunctions()
 {
   using namespace slankdev;
 

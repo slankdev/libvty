@@ -13,7 +13,7 @@ class key_func;
 class command;
 
 class shell {
-  friend class vty;
+  friend class vty_server;
   std::string prompt;
   int   fd;
   bool  closed;

@@ -102,7 +102,7 @@ ssn_vty::ssn_vty(uint32_t addr, uint16_t port)
       "Y88b  d88P Y88b 888      X88 888  888 888  888 Y88..88P Y88b 888 d88P \r\n"
       " \"Y8888P\"   \"Y88888  88888P\' \"Y888888 888  888  \"Y88P\"   \"Y8888888P\"  \r\n"
       "\r\n";
-  v = new vty(port, str, "ssn> ");
+  v = new vty_server(port, str, "ssn> ");
 }
 ssn_vty::~ssn_vty() { delete v; }
 

@@ -13,3 +13,6 @@ int main(int argc, char** argv)
   t.join();
 }
 
+int new_main(int argc, char** argv)
+{
+}

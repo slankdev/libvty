@@ -15,7 +15,7 @@
 #include "vty_shell.h"
 
 
-class vty {
+class vty_server {
   const uint16_t          port;
   const std::string       bootmsg;
   const std::string       prompt;
@@ -28,8 +28,8 @@ class vty {
  public:
   void* user_ptr;
 
-  vty(uint16_t p, const char* msg, const char* prmpt);
-  virtual ~vty();
+  vty_server(uint16_t p, const char* msg, const char* prmpt);
+  virtual ~vty_server();
   void install_keyfunction(key_func* kf);
   void install_command(command* cmd);
   void add_default_keyfunctions();
@@ -38,11 +38,10 @@ class vty {
 };
 
 
-
-class vty;
+class vty_server;
 class ssn_vty {
  public:
-  vty* v;
+  vty_server* v;
   ssn_vty(uint32_t addr, uint16_t port);
   virtual ~ssn_vty();
 };
