@@ -1,6 +1,6 @@
 
 #include <ssn_vty.h>
-
+#include <unistd.h>
 
 /*
  *======================================
@@ -115,5 +115,14 @@ void ssn_vty::poll_dispatch() { v->poll_dispatch(); }
 void ssn_vty::install_command(command* cmd) { v->install_command(cmd); }
 void ssn_sleep(size_t n) { usleep(n * 1000); }
 
-
+bool vty_running;
+void vty_poll(void* arg)
+{
+  ssn_vty* v = reinterpret_cast<ssn_vty*>(arg);
+  vty_running = true;
+  while (vty_running) {
+    v->poll_dispatch();
+  }
+  printf("Finish %s\n", __func__);
+}
 

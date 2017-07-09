@@ -1,10 +1,9 @@
 
 #pragma once
 
-#include <vty_server.h>
-#include <vty_cmd.h>
 #include <stddef.h>
-#include <unistd.h>
+#include <stdint.h>
+#include <vty_server.h>
 
 
 typedef void (*vty_callback_t)(void* arg);
@@ -20,7 +19,6 @@ class ssn_vty {
   void install_command(command* cmd);
 };
 
-void ssn_vty_poll_thread(void* arg);
-void ssn_vty_poll_thread_stop();
-
+extern bool vty_running;
+void vty_poll(void* arg);
 
