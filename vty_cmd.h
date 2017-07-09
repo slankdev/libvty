@@ -7,7 +7,7 @@ class vty_client;
 
 class vty_cmd {
  public:
-  vty_cmd_match match_;
+  vty_cmd_match match;
   virtual ~vty_cmd() {}
   virtual void func(vty_client* sh) = 0;
 };

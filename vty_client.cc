@@ -36,7 +36,7 @@ void vty_client::exec_command()
   if (!ibuf.empty()) {
     history.add(ibuf.to_string());
     for (size_t i=0; i<commands->size(); i++) {
-      if (commands->at(i)->match_.is_match(ibuf.to_string().c_str())) {
+      if (commands->at(i)->match.is_match(ibuf.to_string().c_str())) {
         commands->at(i)->func(this);
         ibuf.clear();
         history.clean();
