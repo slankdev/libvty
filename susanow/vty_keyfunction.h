@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <slankdev/exception.h>
-#include <vty_shell.h>
+#include <vty_client.h>
 
 
 class key_func {

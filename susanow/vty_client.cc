@@ -1,5 +1,5 @@
 
-#include <vty_shell.h>
+#include <vty_client.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <vector>

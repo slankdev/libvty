@@ -11,7 +11,7 @@ SRC = \
 		vty_cmd_history.cc \
 		vty_cmd.cc         \
 		vty_keyfunction.cc \
-		vty_shell.cc
+		vty_client.cc
 
 all:
 	$(CXX) $(CXXFLAGS) $(SRC) $(LDFLAGS)

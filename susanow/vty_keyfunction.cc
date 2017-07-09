@@ -1,7 +1,7 @@
 
 #include <vty_keyfunction.h>
 #include <vty_cmd.h>
-#include <vty_shell.h>
+#include <vty_client.h>
 #include <slankdev/string.h>
 #include <algorithm>
 

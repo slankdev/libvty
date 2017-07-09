@@ -12,7 +12,7 @@
 #include "vty_cmd.h"
 #include "vty_input_buffer.h"
 #include "vty_cmd_history.h"
-#include "vty_shell.h"
+#include "vty_client.h"
 
 
 class vty_server {
