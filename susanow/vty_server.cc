@@ -36,11 +36,11 @@ static int Get_server_sock(uint32_t addr, uint16_t port)
   return server_sock.get_fd();
 }
 
-vty_server::vty_server(uint32_t addr_, uint16_t port_,
-                const char* bootmsg_, const char* prompt_)
-  : bootmsg(bootmsg_), prompt(prompt_)
+vty_server::vty_server(uint32_t addr, uint16_t port,
+                const char* bootmsg, const char* prompt)
+  : bootmsg_(bootmsg), prompt_(prompt)
 {
-  server_fd = Get_server_sock(addr_, port_);
+  server_fd_ = Get_server_sock(addr, port);
 
   using namespace slankdev;
   uint8_t up   [] = {AC_ESC, '[', AC_A};
@@ -82,11 +82,11 @@ vty_server::vty_server(uint32_t addr_, uint16_t port_,
 }
 vty_server::~vty_server()
 {
-  for (command* c : commands) delete c;
-  for (key_func* f : keyfuncs) delete f;
+  for (command* c : commands_) delete c;
+  for (key_func* f : keyfuncs_) delete f;
 }
-void vty_server::install_keyfunction(key_func* kf) { keyfuncs.push_back(kf); }
-void vty_server::install_command(command* cmd) { commands.push_back(cmd); }
+void vty_server::install_keyfunction(key_func* kf) { keyfuncs_.push_back(kf); }
+void vty_server::install_command(command* cmd) { commands_.push_back(cmd); }
 
 void vty_server::dispatch()
 {
@@ -98,8 +98,8 @@ void vty_server::dispatch()
     }
   };
   std::vector<struct Pollfd> fds;
-  fds.push_back(Pollfd(server_fd, POLLIN));
-  for (const vty_client& sh : clients) fds.emplace_back(Pollfd(sh.fd, POLLIN));
+  fds.push_back(Pollfd(server_fd_, POLLIN));
+  for (const vty_client& sh : clients_) fds.emplace_back(Pollfd(sh.fd, POLLIN));
 
   if (slankdev::poll(fds.data(), fds.size(), 1000)) {
     if (fds[0].revents & POLLIN) {
@@ -121,14 +121,14 @@ void vty_server::dispatch()
       slankdev::vty_dont_linemode (fd);
       slankdev::vty_do_window_size (fd);
 
-      clients.push_back(
+      clients_.push_back(
           vty_client(
             fd,
-            bootmsg.c_str(),
-            prompt.c_str(),
-            &commands,
-            &keyfuncs,
-            user_ptr
+            bootmsg_.c_str(),
+            prompt_.c_str(),
+            &commands_,
+            &keyfuncs_,
+            user_ptr_
             )
           );
     }
@@ -138,10 +138,10 @@ void vty_server::dispatch()
      */
     for (size_t i=1; i<fds.size(); i++) {
       if (fds[i].revents & POLLIN) {
-        clients[i-1].process();
-        if (clients[i-1].closed) {
+        clients_[i-1].process();
+        if (clients_[i-1].closed) {
           close(fds[i].fd);
-          clients.erase(clients.begin() + i);
+          clients_.erase(clients_.begin() + i);
           continue;
         }
       }

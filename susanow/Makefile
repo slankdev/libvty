@@ -24,4 +24,4 @@ all: $(OBJ)
 clean:
 	rm -rf *.o *.out
 
-
+re: clean all

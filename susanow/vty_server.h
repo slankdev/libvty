@@ -16,18 +16,17 @@
 
 
 class vty_server {
-  int                     server_fd;
-  const std::string       bootmsg;
-  const std::string       prompt;
-  std::vector<vty_client> clients;
-  std::vector<command*>   commands;
-  std::vector<key_func*>  keyfuncs;
-
+  int                     server_fd_;
+  const std::string       bootmsg_;
+  const std::string       prompt_;
+  std::vector<vty_client> clients_;
+  std::vector<command*>   commands_;
+  std::vector<key_func*>  keyfuncs_;
  public:
-  void* user_ptr;
+  void* user_ptr_;
 
-  vty_server(uint32_t addr_, uint16_t port_,
-      const char* bootmsg_, const char* prompt_);
+  vty_server(uint32_t addr, uint16_t port,
+      const char* bootmsg, const char* prompt);
   virtual ~vty_server();
 
   void install_keyfunction(key_func* kf);
