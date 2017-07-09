@@ -1,34 +1,4 @@
 
-/*
- * MIT License
- *
- * Copyright (c) 2017 Hiroki SHIROKURA
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-/**
- * @file   ssn_vty.h
- * @brief  vty implementation
- * @author Hiroki SHIROKURA
- * @date   2017.6.16
- */
-
 
 #pragma once
 #include <stdint.h>
@@ -98,7 +68,7 @@ class node_string : public node {
   std::string to_string() { return "<string>"; }
   const std::string& msg() { return msg_; }
 };
-class shell;
+
 class command {
  public:
   std::vector<node*> nodes;
@@ -107,43 +77,10 @@ class command {
   virtual bool match(const std::string& str);
 };
 
-class inputbuffer {
-  std::string ibuf;
-  size_t cur_idx;
- public:
-  inputbuffer() : cur_idx(0) {}
-  void input_char(char c) { ibuf.insert(ibuf.begin()+cur_idx, c); cur_idx++; }
-  void input_str(const std::string& str) { for (char c : str) input_char(c); }
-  void clear()  { ibuf.clear(); cur_idx = 0; }
-  size_t length()   const { return ibuf.length(); }
-  const char* c_str() const { return ibuf.c_str();  }
-  size_t index() const { return cur_idx; }
-  bool empty() const { return ibuf.empty(); }
-  std::string to_string() const { return ibuf; }
 
-  void cursor_top() { cur_idx = 0; }
-  void cursor_end() { cur_idx = ibuf.size(); }
-  void cursor_right() { if (cur_idx < ibuf.length()) cur_idx ++ ; }
-  void cursor_left() { if (cur_idx > 0) cur_idx -- ; }
-  void cursor_backspace()
-  {
-    if (cur_idx > 0) {
-      cur_idx --;
-      ibuf.erase(ibuf.begin() + cur_idx);
-    }
-  }
-};
+#include "vty_input_buffer.h"
+#include "vty_cmd_history.h"
 
-class commandhistory {
-  size_t hist_index;
-  std::vector<std::string> history;
- public:
-  commandhistory() : hist_index(0) {}
-  void add(const std::string& str) { history.push_back(str); }
-  void clean() { hist_index=0; }
-  std::string deep_get();
-  std::string shallow_get();
-};
 class shell {
   friend class vty;
   std::string prompt;

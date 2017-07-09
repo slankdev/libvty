@@ -1,6 +1,4 @@
 
-// #include <susanow.h>
-// #include <ssn_sys.h>
 #include <net/if.h>
 #include <ssn_vty.h>
 
@@ -35,21 +33,6 @@ bool node_fixedstring::match_prefix(const std::string& s)
   }
   return false;
 }
-
-
-std::string commandhistory::deep_get()
-{
-  if (history.empty()) return "";
-  if (hist_index+2 > history.size()) return *(history.end() - hist_index - 1);
-  return *(history.end() - ++hist_index);
-}
-std::string commandhistory::shallow_get()
-{
-  if (history.empty()) return "";
-  if (ssize_t(hist_index)-1 < 0) return *(history.end() - hist_index - 1);
-  return *(history.end() - --hist_index - 1);
-}
-
 
 void shell::process()
 {

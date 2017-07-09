@@ -1,5 +1,4 @@
 
-#include <net/if.h>
 #include <thread>
 #include "ssn_vty.h"
 #include <slankdev/util.h>
