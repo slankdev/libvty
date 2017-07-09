@@ -27,11 +27,7 @@ class vty_server {
   virtual ~vty_server();
 
   void install_keyfunction(key_func* kf);
-#if 0
-  void install_command(vty_cmd* cmd);
-#else
   void install_command(vty_cmd_match m, vty_cmdcallback_t f, void* arg);
-#endif
   void poll_dispatch();
 };
 

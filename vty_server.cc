@@ -156,9 +156,6 @@ void vty_server::poll_dispatch()
   } // if(poll)
 }
 
-#if 0
-void vty_server::install_command(vty_cmd* cmd) { commands_.push_back(cmd); }
-#else
 void vty_server::install_command(vty_cmd_match m, vty_cmdcallback_t f, void* arg)
 {
   vty_cmd* cmd = new vty_cmd;
@@ -167,5 +164,4 @@ void vty_server::install_command(vty_cmd_match m, vty_cmdcallback_t f, void* arg
   cmd->arg   = arg;
   commands_.push_back(cmd);
 }
-#endif
 
