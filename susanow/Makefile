@@ -6,7 +6,7 @@ LDFLAGS  = -lpthread
 CXXFLAGS += -I.
 SRC = \
 		main.cc            \
-		vty.cc             \
+		ssn_vty.cc         \
 		vty_server.cc      \
 		vty_cmd_history.cc \
 		vty_cmd.cc         \

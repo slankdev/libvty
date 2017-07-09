@@ -16,37 +16,24 @@
 
 
 class vty_server {
-  const uint16_t          port;
+  int                     server_fd;
   const std::string       bootmsg;
   const std::string       prompt;
-  int                     server_fd;
   std::vector<vty_client> clients;
   std::vector<command*>   commands;
   std::vector<key_func*>  keyfuncs;
 
-  int get_server_sock();
  public:
   void* user_ptr;
 
-  vty_server(uint16_t p, const char* msg, const char* prmpt);
+  vty_server(uint32_t addr_, uint16_t port_,
+      const char* bootmsg_, const char* prompt_);
   virtual ~vty_server();
+
   void install_keyfunction(key_func* kf);
   void install_command(command* cmd);
-  void add_default_keyfunctions();
-  void init_default_keyfunc();
   void dispatch();
 };
 
-
-class vty_server;
-class ssn_vty {
- public:
-  vty_server* v;
-  ssn_vty(uint32_t addr, uint16_t port);
-  virtual ~ssn_vty();
-};
-
-void ssn_vty_poll_thread(void* arg);
-void ssn_vty_poll_thread_stop();
 
 

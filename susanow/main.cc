@@ -1,7 +1,7 @@
 
 
 #include <thread>
-#include "vty.h"
+#include <ssn_vty.h>
 
 int main(int argc, char** argv)
 {
@@ -13,6 +13,10 @@ int main(int argc, char** argv)
   t.join();
 }
 
+void Slankdev(void*) {}
+
 int new_main(int argc, char** argv)
 {
+  ssn_vty vty(0x0, 9999);
+  vty.new_install_command("", Slankdev, nullptr);
 }

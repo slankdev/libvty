@@ -1,5 +1,5 @@
 
-#include <vty.h>
+#include <vty_server.h>
 
 #include <net/if.h>
 #include <stdio.h>
@@ -22,11 +22,63 @@
 #include <slankdev/util.h>
 #include <slankdev/asciicode.h>
 
-
-vty_server::vty_server(uint16_t p, const char* msg, const char* prmpt)
-  : port(p), bootmsg(msg), prompt(prmpt), server_fd(get_server_sock())
+static int Get_server_sock(uint32_t addr, uint16_t port)
 {
-  add_default_keyfunctions();
+  slankdev::socketfd server_sock;
+  server_sock.noclose_in_destruct = true;
+  server_sock.socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+  int option = 1;
+  server_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+
+  server_sock.bind(addr, port);
+  server_sock.listen(5);
+  return server_sock.get_fd();
+}
+
+vty_server::vty_server(uint32_t addr_, uint16_t port_,
+                const char* bootmsg_, const char* prompt_)
+  : bootmsg(bootmsg_), prompt(prompt_)
+{
+  server_fd = Get_server_sock(addr_, port_);
+
+  using namespace slankdev;
+  uint8_t up   [] = {AC_ESC, '[', AC_A};
+  uint8_t down [] = {AC_ESC, '[', AC_B};
+  uint8_t right[] = {AC_ESC, '[', AC_C};
+  uint8_t left [] = {AC_ESC, '[', AC_D};
+  install_keyfunction(new KF_hist_search_deep   (up   , sizeof(up   )));
+  install_keyfunction(new KF_hist_search_shallow(down , sizeof(down )));
+  install_keyfunction(new KF_right(right, sizeof(right)));
+  install_keyfunction(new KF_left (left , sizeof(left )));
+
+  uint8_t ctrlP[] = {AC_Ctrl_P};
+  uint8_t ctrlN[] = {AC_Ctrl_N};
+  uint8_t ctrlF[] = {AC_Ctrl_F};
+  uint8_t ctrlB[] = {AC_Ctrl_B};
+  install_keyfunction(new KF_hist_search_deep   (ctrlP, sizeof(ctrlP)));
+  install_keyfunction(new KF_hist_search_shallow(ctrlN, sizeof(ctrlN)));
+  install_keyfunction(new KF_right(ctrlF, sizeof(ctrlF)));
+  install_keyfunction(new KF_left (ctrlB, sizeof(ctrlB)));
+
+  uint8_t ctrlA[] = {AC_Ctrl_A};
+  uint8_t ctrlE[] = {AC_Ctrl_E};
+  install_keyfunction(new KF_cursor_top(ctrlA, sizeof(ctrlA)));
+  install_keyfunction(new KF_cursor_end(ctrlE, sizeof(ctrlE)));
+
+  uint8_t question[] = {'?'};
+  install_keyfunction(new KF_help(question, sizeof(question)));
+
+  uint8_t tab[] = {'\t'};
+  install_keyfunction(new KF_completion(tab, sizeof(tab)));
+
+  uint8_t ret[] = {'\r', '\0'};
+  install_keyfunction(new KF_return  (ret, sizeof(ret)));
+  uint8_t CtrlJ[] = {AC_Ctrl_J};
+  install_keyfunction(new KF_return  (CtrlJ, sizeof(CtrlJ)));
+
+  uint8_t backspace[] = {0x7f};
+  install_keyfunction(new KF_backspace  (backspace, sizeof(backspace)));
 }
 vty_server::~vty_server()
 {
@@ -35,21 +87,6 @@ vty_server::~vty_server()
 }
 void vty_server::install_keyfunction(key_func* kf) { keyfuncs.push_back(kf); }
 void vty_server::install_command(command* cmd) { commands.push_back(cmd); }
-int vty_server::get_server_sock()
-{
-  slankdev::socketfd server_sock;
-  server_sock.noclose_in_destruct = true;
-  server_sock.socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  int option = 1;
-  server_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-  struct sockaddr_in addr;
-  addr.sin_family = AF_INET;
-  addr.sin_port   = htons(port);
-  addr.sin_addr.s_addr = INADDR_ANY;
-  server_sock.bind((sockaddr*)&addr, sizeof(addr));
-  server_sock.listen(5);
-  return server_sock.get_fd();
-}
 
 void vty_server::dispatch()
 {
@@ -110,48 +147,6 @@ void vty_server::dispatch()
       }
     }
   }
-}
-
-void vty_server::add_default_keyfunctions()
-{
-  using namespace slankdev;
-
-  uint8_t up   [] = {AC_ESC, '[', AC_A};
-  uint8_t down [] = {AC_ESC, '[', AC_B};
-  uint8_t right[] = {AC_ESC, '[', AC_C};
-  uint8_t left [] = {AC_ESC, '[', AC_D};
-  install_keyfunction(new KF_hist_search_deep   (up   , sizeof(up   )));
-  install_keyfunction(new KF_hist_search_shallow(down , sizeof(down )));
-  install_keyfunction(new KF_right(right, sizeof(right)));
-  install_keyfunction(new KF_left (left , sizeof(left )));
-
-  uint8_t ctrlP[] = {AC_Ctrl_P};
-  uint8_t ctrlN[] = {AC_Ctrl_N};
-  uint8_t ctrlF[] = {AC_Ctrl_F};
-  uint8_t ctrlB[] = {AC_Ctrl_B};
-  install_keyfunction(new KF_hist_search_deep   (ctrlP, sizeof(ctrlP)));
-  install_keyfunction(new KF_hist_search_shallow(ctrlN, sizeof(ctrlN)));
-  install_keyfunction(new KF_right(ctrlF, sizeof(ctrlF)));
-  install_keyfunction(new KF_left (ctrlB, sizeof(ctrlB)));
-
-  uint8_t ctrlA[] = {AC_Ctrl_A};
-  uint8_t ctrlE[] = {AC_Ctrl_E};
-  install_keyfunction(new KF_cursor_top(ctrlA, sizeof(ctrlA)));
-  install_keyfunction(new KF_cursor_end(ctrlE, sizeof(ctrlE)));
-
-  uint8_t question[] = {'?'};
-  install_keyfunction(new KF_help(question, sizeof(question)));
-
-  uint8_t tab[] = {'\t'};
-  install_keyfunction(new KF_completion(tab, sizeof(tab)));
-
-  uint8_t ret[] = {'\r', '\0'};
-  install_keyfunction(new KF_return  (ret, sizeof(ret)));
-  uint8_t CtrlJ[] = {AC_Ctrl_J};
-  install_keyfunction(new KF_return  (CtrlJ, sizeof(CtrlJ)));
-
-  uint8_t backspace[] = {0x7f};
-  install_keyfunction(new KF_backspace  (backspace, sizeof(backspace)));
 }
 
 

@@ -11,6 +11,7 @@ static inline bool endisspace(std::string str)
   return (istr[strlen(istr)-1] == ' ');
 }
 
+
 void KF_help::function(vty_client* sh)
 {
   const std::vector<command*>& commands = *sh->commands;
@@ -125,3 +126,5 @@ void KF_completion::function(vty_client* sh)
     sh->Printf("\r\n");
   }
 }
+
+
