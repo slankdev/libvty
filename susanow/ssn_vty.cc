@@ -1,6 +1,7 @@
 
 // #include <susanow.h>
 // #include <ssn_sys.h>
+#include <net/if.h>
 #include <ssn_vty.h>
 
 #include <stdio.h>
