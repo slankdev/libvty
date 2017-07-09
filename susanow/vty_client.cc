@@ -8,23 +8,6 @@
 #include <unistd.h>
 #include <slankdev/asciicode.h>
 
-void vty_client::press_keys(const void* d, size_t l)
-{
-  const uint8_t* p = reinterpret_cast<const uint8_t*>(d);
-  if (l == 0) throw slankdev::exception("empty data received");
-
-  for (key_func* kf : *keyfuncs) {
-    if (kf->match(p, l)) {
-      kf->function(this);
-      return ;
-    }
-  }
-
-  if (l > 1) {
-    return ;
-  }
-  ibuf.input_char(p[0]);
-}
 
 
 vty_client::vty_client(
@@ -76,7 +59,21 @@ void vty_client::poll_dispatch()
   ssize_t res = ::read(client_fd_, str, sizeof(str));
   if (res <= 0) throw slankdev::exception("OKASHII");
 
-  press_keys(str, res);
+  {
+    const void* d = str;
+    size_t l = res;
+    const uint8_t* p = reinterpret_cast<const uint8_t*>(d);
+    if (l == 0) throw slankdev::exception("empty data received");
+    for (key_func* kf : *keyfuncs) {
+      if (kf->match(p, l)) {
+        kf->function(this);
+        goto ret ;
+      }
+    }
+    if (l > 1) goto ret ;
+    ibuf.input_char(p[0]);
+  }
+ret:
   refresh_prompt();
 }
 

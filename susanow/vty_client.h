@@ -19,7 +19,7 @@ class vty_client {
   int         client_fd_;
   bool        closed_   ;
 
-  void press_keys(const void* d, size_t l);
+  // void press_keys(const void* d, size_t l);
  public:
   commandhistory history;
   inputbuffer    ibuf;
