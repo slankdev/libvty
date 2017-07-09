@@ -9,7 +9,6 @@ CXXFLAGS = -I$(LIBSLANKDEV) -std=c++11 -I.
 
 SRC = \
 		vty_server.cc      \
-		vty_cmd.cc         \
 		vty_keyfunction.cc \
 		vty_client.cc
 OBJ = $(SRC:.cc=.o)

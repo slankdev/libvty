@@ -10,6 +10,5 @@ class vty_cmd {
   vty_cmd_match match_;
   virtual ~vty_cmd() {}
   virtual void func(vty_client* sh) = 0;
-  virtual bool match(const std::string& str);
 };
 
