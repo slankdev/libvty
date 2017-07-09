@@ -15,7 +15,6 @@ class ssn_vty {
   virtual ~ssn_vty();
 
   void poll_dispatch();
-  void new_install_command(const char* match, vty_callback_t cb, void* arg) {}
   void install_command(command* cmd);
 };
 
