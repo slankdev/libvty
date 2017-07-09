@@ -70,7 +70,7 @@ void vty_client::exec_command()
   refresh_prompt();
 }
 
-void vty_client::process()
+void vty_client::poll_dispatch()
 {
   char str[100];
   ssize_t res = ::read(fd, str, sizeof(str));

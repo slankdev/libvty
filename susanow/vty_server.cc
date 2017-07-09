@@ -137,14 +137,14 @@ void vty_server::poll_dispatch()
      */
     for (size_t i=1; i<fds.size(); i++) {
       if (fds[i].revents & POLLIN) {
-        clients_[i-1].process();
+        clients_[i-1].poll_dispatch();
         if (clients_[i-1].closed) {
           close(fds[i].fd);
           clients_.erase(clients_.begin() + i);
           continue;
         }
       }
-    }
+    } // for
   }
 }
 
