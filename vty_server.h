@@ -11,6 +11,9 @@
 #include "vty_client.h"
 
 
+typedef void (*vty_cmdcallback_t)(vty_cmd_match *m, void* arg);
+
+
 class vty_server {
   int                     server_fd_;
   const std::string       bootmsg_;
@@ -26,7 +29,11 @@ class vty_server {
   virtual ~vty_server();
 
   void install_keyfunction(key_func* kf);
+#if 1
   void install_command(vty_cmd* cmd);
+#else
+  void install_command(vty_cmd_match m, vty_cmdcallback_t f, void* arg);
+#endif
   void poll_dispatch();
 };
 
