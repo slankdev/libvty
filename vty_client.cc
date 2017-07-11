@@ -9,6 +9,7 @@
 #include <slankdev/asciicode.h>
 
 
+int vty_client::get_fd() const { return client_fd_; }
 
 vty_client::vty_client(
     int d,

@@ -39,6 +39,7 @@ class vty_client {
   void Printf(const char* fmt, ...);
   void refresh_prompt();
   void exec_command();
+  int  get_fd() const;
 };
 
 
