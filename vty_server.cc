@@ -114,7 +114,7 @@ void vty_server::poll_dispatch()
 
   for (const vty_client& sh : clients_) fds.push_back(Pollfd(sh.client_fd_, POLLIN));
 
-  if (slankdev::poll(fds.data(), fds.size(), 1000)) {
+  if (slankdev::poll(fds.data(), fds.size(), 0)) {
 
     /*
      * Server Accept Process
