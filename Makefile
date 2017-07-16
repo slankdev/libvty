@@ -1,6 +1,6 @@
 
 
-LIBSLANKDEV := $(HOME)/git/slankdev/libslankdev
+LIBSLANKDEV := $(SSN_SDK)/libslankdev
 CXXFLAGS = -I$(LIBSLANKDEV) -std=c++11 -I.
 
 .cc.o:
