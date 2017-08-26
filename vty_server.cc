@@ -15,7 +15,7 @@
 #include <algorithm>
 
 #include <slankdev/socketfd.h>
-#include <slankdev/telnet.h>
+#include <slankdev/new/telnet.h>
 #include <slankdev/poll.h>
 #include <slankdev/exception.h>
 #include <slankdev/string.h>
