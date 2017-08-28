@@ -1,6 +1,6 @@
 
 
-LIBSLANKDEV := $(SSN_SDK)/libslankdev
+LIBSLANKDEV := $(SSN_SDK)/lib/libslankdev
 CXXFLAGS = -I$(LIBSLANKDEV) -std=c++11 -I.
 
 .cc.o:
